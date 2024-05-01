@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
 import React from 'react';
 
@@ -14,8 +15,12 @@ export type UserMetadata = {
   sub: string;
 };
 
+const prisma = new PrismaClient();
+
 async function ProfilePage() {
   const supabase = createClient();
+  const users = await prisma.user.findMany();
+  console.log(users);
 
   const {
     data: { user },

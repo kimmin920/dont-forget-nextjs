@@ -26,6 +26,7 @@ export async function oAuthSignIn(provider: Provider) {
     redirect('/login?message=Could not authenticate user');
   }
 
+  console.log(data.url);
   return redirect(data.url);
 }
 

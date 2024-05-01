@@ -14,67 +14,70 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// model Post {
-//   id        Int     @id @default(autoincrement())
-//   title     String
-//   content   String?
-//   published Boolean @default(false)
-//   author    User?   @relation(fields: [authorId], references: [id])
-//   authorId  Int?
-// }
-
-// model User {
-//   id    Int     @id @default(autoincrement())
-//   email String  @unique
-//   name  String?
-//   posts Post[]
-// }
-
 model User {
-  id                 String          @id @default(uuid())
-  age                Int
-  name               String
-  email              String          @unique
-  preferences        Json?
-  writtenPosts       Post[]          @relation("writtenPosts")
-  favoritePostsPosts Post[]          @relation("favoritePostsPosts")
-  userPreference     UserPreference? @relation(fields: [userPreferenceId], references: [id])
-  userPreferenceId   String?         @unique
+  id     String  @id @default(uuid())
+  name   String
+  email  String  @unique
+  events Event[]
 
-  role Role @default(BASIC)
-
-  @@unique([age, name])
   @@index([email])
 }
 
-model UserPreference {
-  id           String  @id @default(uuid())
-  emailUpdates Boolean
-  user         User?
-}
-
-model Post {
-  id            String     @id @default(uuid())
-  title         String
-  averageRating Float
-  author        User       @relation("writtenPosts", fields: [authorId], references: [id])
-  authorId      String
-  favoritedBy   User?      @relation("favoritePostsPosts", fields: [favoritedById], references: [id])
-  favoritedById String?
-  Categories    Category[]
-  updatedAt     DateTime   @updatedAt
-  createdAt     DateTime   @default(now())
-
-  // @@id([title, authorId])
-}
-
-model Category {
+model Event {
   id    String @id @default(uuid())
-  posts Post[]
+  title String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  eventee   Eventee @relation(fields: [eventeeId], references: [id])
+  eventeeId String
+
+  startedAt DateTime
+
+  type     EventType
+  birthday Birthday?
+  greeting Greeting?
+
+  preferences Json?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
 }
 
-enum Role {
-  BASIC
-  ADMIN
-  EDITOR
+model Birthday {
+  eventId      String       @id
+  event        Event        @relation(fields: [eventId], references: [id])
+  birthday     DateTime
+  calendarType CalendarType
+}
+
+model Greeting {
+  eventId    String     @id
+  event      Event      @relation(fields: [eventId], references: [id])
+  repetition Repetition
+}
+
+enum Repetition {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum CalendarType {
+  LUNAR
+  SOLAR
+}
+
+enum EventType {
+  BIRTHDAY
+  GREETING
+}
+
+model Eventee {
+  id     String  @id @default(uuid())
+  name   String
+  role   String
+  event  Event[]
+  userId String
 }
