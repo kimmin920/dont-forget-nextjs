@@ -1,16 +1,60 @@
-'use server';
-import { PrismaClient } from '@prisma/client';
+'use client';
 
-const prisma = new PrismaClient();
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Eventee } from '@prisma/client';
 
-export async function EventeeSelect() {
-  const eventees = await prisma.eventee.findMany();
+import { createClient } from '@utils/supabase/client';
+import { useEffect, useState } from 'react';
+
+async function fetchEventees() {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data } = await supabase
+    .from('Eventee')
+    .select('*')
+    .eq('userId', user!.id);
+
+  return data;
+}
+
+export default function EventeeSelectBox({
+  onValueChange,
+}: {
+  onValueChange: (value: string) => void;
+}) {
+  const [eventees, setEventees] = useState<Eventee[]>([]);
+
+  useEffect(() => {
+    async function getEventees() {
+      const data = await fetchEventees();
+      setEventees(data as Eventee[]);
+    }
+
+    getEventees();
+  }, []);
 
   return (
-    <>
-      {eventees.map((eventee) => (
-        <div key={eventee.id}>{eventee.name}</div>
-      ))}
-    </>
+    <Select onValueChange={onValueChange}>
+      <SelectTrigger className='w-[180px]'>
+        <SelectValue placeholder='Theme' />
+      </SelectTrigger>
+      <SelectContent>
+        {eventees.map((eventee) => (
+          <SelectItem key={eventee.id} value={eventee.id}>
+            {eventee.name}, {eventee.role}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

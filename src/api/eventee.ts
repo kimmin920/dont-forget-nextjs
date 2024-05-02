@@ -21,9 +21,11 @@ export async function findManyEventee() {
 export async function createEventee({
   name,
   role,
+  userId,
 }: {
   name: string;
   role: string;
+  userId: string;
 }) {
   const {
     data: { user },

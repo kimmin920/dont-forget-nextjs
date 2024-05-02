@@ -13,6 +13,9 @@ export async function findManyEvents() {
     where: {
       userId: user!.id,
     },
+    include: {
+      eventee: true,
+    },
   });
 
   return events;

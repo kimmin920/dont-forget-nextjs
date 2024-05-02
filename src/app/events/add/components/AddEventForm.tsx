@@ -2,24 +2,14 @@
 import React, { useState } from 'react';
 import { addEvent } from '../actions';
 import { Button } from '@/components/ui/button';
+import { EventeeSelect } from '../../components/EventeeDrawer';
 
 function AddEventForm({ children }: { children: React.ReactNode }) {
-  const [openEventeeSelect, setOpenEventeeSelect] = useState(false);
-
-  function onClickSelectEventee() {
-    console.log('????');
-    setOpenEventeeSelect(true);
-  }
-
   return (
     <>
-      {openEventeeSelect && children}
-
       <form action={addEvent}>
         <input name='title' type='text' />
-        <Button type='button' onClick={onClickSelectEventee}>
-          Select Eventee
-        </Button>
+        {children}
 
         <Button type='submit'>ADD</Button>
       </form>

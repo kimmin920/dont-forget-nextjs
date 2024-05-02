@@ -24,6 +24,8 @@ async function Header() {
             <span className='font-bold'>my-app</span>
           </a>
           <Link href='/'>main</Link>
+          <Link href='/events'>Events</Link>
+          <Link href='/eventees'>Eventees</Link>
         </nav>
         <div className='flex flex-1 items-center justify-end space-x-2'>
           {user !== null ? (

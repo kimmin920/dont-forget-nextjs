@@ -4,21 +4,6 @@ import { Event, PrismaClient } from '@prisma/client';
 import Link from 'next/link';
 import React, { Suspense } from 'react';
 
-async function fetchEvents(): Promise<Event[]> {
-  const prisma = new PrismaClient();
-
-  try {
-    const events = await prisma.event.findMany();
-
-    return events;
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
-    return [];
-  } finally {
-    prisma.$disconnect();
-  }
-}
-
 async function EventPage() {
   const events = await findManyEvents();
 
@@ -36,7 +21,12 @@ async function EventPage() {
       <div>
         <AddEvent />
         {events.map((event) => (
-          <div key={event.id}>{event.title}</div>
+          <div key={event.id} className='flex'>
+            <div>{event.title}</div>
+            <div>
+              {event.eventee.name} + {event.eventee.role}
+            </div>
+          </div>
         ))}
       </div>
     </Suspense>
