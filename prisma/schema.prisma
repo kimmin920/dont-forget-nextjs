@@ -47,7 +47,7 @@ model Event {
 model Birthday {
   eventId      String       @id
   event        Event        @relation(fields: [eventId], references: [id])
-  birthday     DateTime
+  birthday     DateTime     @db.Date
   calendarType CalendarType
 }
 

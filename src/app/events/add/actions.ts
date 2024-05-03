@@ -1,6 +1,11 @@
 'use server';
 import { createEventee } from '@/api/eventee';
-import { PrismaClient } from '@prisma/client';
+import {
+  CalendarType,
+  EventType,
+  PrismaClient,
+  Repetition,
+} from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
 
 export async function addEvent(formData: FormData) {
@@ -16,11 +21,12 @@ export async function addEvent(formData: FormData) {
   }
 
   try {
+    const eventType = formData.get('type') as EventType;
     const data = await prisma.event.create({
       data: {
         title: formData.get('title') as string,
         startedAt: new Date(),
-        type: 'BIRTHDAY',
+        type: eventType,
         user: {
           connect: {
             id: user.id,
@@ -31,6 +37,23 @@ export async function addEvent(formData: FormData) {
             id: formData.get('eventeeId') as string,
           },
         },
+        birthday:
+          eventType === 'BIRTHDAY'
+            ? {
+                create: {
+                  birthday: new Date(formData.get('birthday') as string),
+                  calendarType: formData.get('calendarType') as CalendarType,
+                },
+              }
+            : undefined,
+        greeting:
+          eventType === 'GREETING'
+            ? {
+                create: {
+                  repetition: formData.get('repetition') as Repetition,
+                },
+              }
+            : undefined,
       },
     });
     return data;

@@ -30,7 +30,7 @@ async function fetchEventees() {
 export default function EventeeSelectBox({
   onValueChange,
 }: {
-  onValueChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
 }) {
   const [eventees, setEventees] = useState<Eventee[]>([]);
 
@@ -44,9 +44,9 @@ export default function EventeeSelectBox({
   }, []);
 
   return (
-    <Select onValueChange={onValueChange}>
-      <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder='Theme' />
+    <Select onValueChange={onValueChange} name='eventeeId'>
+      <SelectTrigger id='eventeeId' className='w-full'>
+        <SelectValue placeholder='이벤티를 선택하세요.' />
       </SelectTrigger>
       <SelectContent>
         {eventees.map((eventee) => (
