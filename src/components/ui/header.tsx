@@ -7,8 +7,6 @@ import { signOut } from '@/app/login/actions';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const prisma = new PrismaClient();
-
 async function Header() {
   const supabase = createClient();
 

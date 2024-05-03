@@ -1,17 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
+import { redirect } from 'next/navigation';
+import { getCurrentUser } from './user';
 
 const prisma = new PrismaClient();
 const supabase = createClient();
 
 export async function findManyEventee() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const eventees = await prisma.eventee.findMany({
     where: {
-      userId: user!.id,
+      userId: user.id,
     },
   });
 
@@ -27,15 +27,13 @@ export async function createEventee({
   role: string;
   userId: string;
 }) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const eventee = await prisma.eventee.create({
     data: {
       name,
       role,
-      userId: user!.id,
+      userId: user.id,
     },
   });
 

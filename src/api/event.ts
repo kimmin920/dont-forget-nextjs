@@ -1,17 +1,17 @@
 import { Birthday, Eventee, Greeting, PrismaClient } from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
+import { redirect } from 'next/navigation';
+import { getCurrentUser } from './user';
 
 const prisma = new PrismaClient();
 const supabase = createClient();
 
 export async function findManyEvents() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const events = await prisma.event.findMany({
     where: {
-      userId: user!.id,
+      userId: user.id,
     },
     include: {
       eventee: true,
@@ -36,9 +36,7 @@ export async function createEvent({
   birthday?: Birthday;
   greeting?: Greeting;
 }) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const event = await prisma.event.create({
     data: {
@@ -52,7 +50,7 @@ export async function createEvent({
       },
       user: {
         connect: {
-          id: user!.id,
+          id: user.id,
         },
       },
     },

@@ -1,5 +1,4 @@
 'use server';
-
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -26,7 +25,6 @@ export async function oAuthSignIn(provider: Provider) {
     redirect('/login?message=Could not authenticate user');
   }
 
-  console.log(data.url);
   return redirect(data.url);
 }
 
