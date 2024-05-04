@@ -75,10 +75,11 @@ enum EventType {
 }
 
 model Eventee {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   role        String
   event       Event[]
   userId      String
-  phoneNumber String  @default("")
+  phoneNumber String   @default("")
+  birthday    DateTime @db.Date
 }

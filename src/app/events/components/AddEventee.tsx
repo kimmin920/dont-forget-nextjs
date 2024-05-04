@@ -46,6 +46,10 @@ function AddEventee() {
                 pattern='[0-1]{3}[0-9]{4}[0-9]{4}'
               />
             </div>
+            <div className='grid gap-3'>
+              <Label htmlFor='birthday'>생일</Label>
+              <Input type='date' name='birthday' id='birthday' />
+            </div>
             <DrawerFooter>
               <Button type='submit'>Submit</Button>
               <DrawerClose>

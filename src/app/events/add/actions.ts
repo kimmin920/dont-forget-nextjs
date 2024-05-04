@@ -7,6 +7,7 @@ import {
   Repetition,
 } from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
+import { redirect } from 'next/navigation';
 
 export async function addEvent(formData: FormData) {
   const prisma = new PrismaClient();
@@ -77,18 +78,22 @@ export async function addEventee(formData: FormData) {
     return;
   }
 
+  let id = '';
+
   try {
     const data = await createEventee({
       name: formData.get('name') as string,
       role: formData.get('role') as string,
-      userId: user.id,
+      birthday: new Date(formData.get('birthday') as string),
+      phoneNumber: formData.get('phoneNumber') as string,
     });
 
-    return data;
+    id = data.id;
   } catch (error) {
     console.error('Failed to add events:', error);
     return [];
   } finally {
     prisma.$disconnect();
+    id && redirect(`eventees/${id}`);
   }
 }

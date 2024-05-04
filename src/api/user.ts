@@ -28,7 +28,6 @@ export async function getCurrentUser() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log(user);
   if (!user) {
     redirect('/login');
   }
