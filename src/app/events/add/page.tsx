@@ -1,20 +1,8 @@
-import React, { useState } from 'react';
-import { addEvent } from './actions';
-import { Button } from '@/components/ui/button';
-import { PrismaClient } from '@prisma/client';
-import { EventeeSelect } from '@/app/events/components/EventeeDrawer';
+import React from 'react';
 import AddEventForm from './components/AddEventForm';
-import AddEventee from '../components/AddEventee';
 
 function AddEvent() {
-  return (
-    <AddEventForm>
-      <div className='flex flex-col'>
-        <EventeeSelect />
-        <AddEventee />
-      </div>
-    </AddEventForm>
-  );
+  return <AddEventForm />;
 }
 
 export default AddEvent;

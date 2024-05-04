@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { addEvent } from '../actions';
 import { Button } from '@/components/ui/button';
-import { EventeeSelect } from '../../components/EventeeDrawer';
 import {
   Card,
   CardContent,
@@ -13,7 +12,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -21,27 +19,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Bird,
-  Cake,
-  Dice1,
-  Flower,
-  HeartHandshake,
-  HeartHandshakeIcon,
-  Rabbit,
-  Star,
-  Turtle,
-} from 'lucide-react';
+import { Cake, Flower, HeartHandshake } from 'lucide-react';
 import EventeeSelectBox from '../../components/EventeeSelect';
 import { EventType } from '@prisma/client';
+import AddableDropdown from '@/components/responsive/addable-dropdown';
+import EventeeSwitcher from '../../components/EventeeSwitcher';
 
-function AddEventForm({ children }: { children: React.ReactNode }) {
+function AddEventForm() {
   const [eventType, setEventType] = useState<EventType | null>(null);
+
   return (
     <>
       <form action={addEvent}>
-        {/* {children} */}
-
         <Card>
           <CardHeader>
             <CardTitle>이벤트 등록</CardTitle>
