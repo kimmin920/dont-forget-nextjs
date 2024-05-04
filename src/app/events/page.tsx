@@ -21,12 +21,12 @@ async function EventPage() {
       <div>
         <AddEvent />
         {events.map((event) => (
-          <div key={event.id} className='flex'>
+          <Link href={`events/${event.id}`} key={event.id} className='flex'>
             <div>{event.title}</div>
             <div>
               {event.eventee.name} + {event.eventee.role}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </Suspense>

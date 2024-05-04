@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from './user';
 
 const prisma = new PrismaClient();
-const supabase = createClient();
 
 export async function findManyEvents() {
   const user = await getCurrentUser();
@@ -19,6 +18,26 @@ export async function findManyEvents() {
   });
 
   return events;
+}
+
+export async function findOneEvent(id: string) {
+  const user = await getCurrentUser();
+
+  const event = await prisma.event.findUnique({
+    where: {
+      id: id,
+      userId: user.id,
+    },
+    include: {
+      eventee: true,
+    },
+  });
+
+  if (!event) {
+    redirect('404');
+  }
+
+  return event;
 }
 
 export async function createEvent({

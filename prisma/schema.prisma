@@ -75,9 +75,10 @@ enum EventType {
 }
 
 model Eventee {
-  id     String  @id @default(uuid())
-  name   String
-  role   String
-  event  Event[]
-  userId String
+  id          String  @id @default(uuid())
+  name        String
+  role        String
+  event       Event[]
+  userId      String
+  phoneNumber String  @default("")
 }

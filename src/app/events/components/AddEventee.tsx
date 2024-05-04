@@ -14,6 +14,8 @@ import {
 
 import React from 'react';
 import { addEventee } from '../add/actions';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 function AddEventee() {
   return (
@@ -26,14 +28,31 @@ function AddEventee() {
         </DrawerHeader>
 
         <form action={addEventee}>
-          name: <input type='text' name='name' />
-          role :<input type='text' name='role' />
-          <DrawerFooter>
-            <Button type='submit'>Submit</Button>
-            <DrawerClose>
-              <Button variant='outline'>Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
+          <div className='grid gap-6 p-4'>
+            <div className='grid gap-3'>
+              <Label htmlFor='name'>이름</Label>
+              <Input type='text' name='name' id='name' />
+            </div>
+            <div className='grid gap-3'>
+              <Label htmlFor='role'>호칭</Label>
+              <Input type='text' name='role' id='role' />
+            </div>
+            <div className='grid gap-3'>
+              <Label htmlFor='phoneNumber'>전화번호</Label>
+              <Input
+                type='tel'
+                name='phoneNumber'
+                id='phoneNumber'
+                pattern='[0-1]{3}[0-9]{4}[0-9]{4}'
+              />
+            </div>
+            <DrawerFooter>
+              <Button type='submit'>Submit</Button>
+              <DrawerClose>
+                <Button variant='outline'>Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </div>
         </form>
       </DrawerContent>
     </Drawer>

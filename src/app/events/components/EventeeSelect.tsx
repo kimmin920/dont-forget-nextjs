@@ -37,7 +37,7 @@ export default function EventeeSelectBox({
   useEffect(() => {
     async function getEventees() {
       const data = await fetchEventees();
-      setEventees(data as Eventee[]);
+      setEventees((data ?? []) as Eventee[]);
     }
 
     getEventees();
