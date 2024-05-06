@@ -20,10 +20,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Cake, Flower, HeartHandshake } from 'lucide-react';
-import EventeeSelectBox from '../../components/EventeeSelect';
+import EventeeSelectBox from '../../_components/EventeeSelect';
 import { EventType } from '@prisma/client';
 import AddableDropdown from '@/components/responsive/addable-dropdown';
-import EventeeSwitcher from '../../components/EventeeSwitcher';
+import EventeeSwitcher from '../../_components/EventeeSwitcher';
 
 function AddEventForm() {
   const [eventType, setEventType] = useState<EventType | null>(null);
@@ -119,7 +119,7 @@ function AddEventForm() {
 
               <div className='grid gap-3'>
                 <Label htmlFor='eventeeId'>Eventee</Label>
-                <EventeeSelectBox />
+                {/* <EventeeSelectBox /> */}
               </div>
 
               {eventType === 'BIRTHDAY' && (

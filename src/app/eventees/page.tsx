@@ -1,6 +1,6 @@
 import { findManyEventee } from '@/api/eventee';
 import React from 'react';
-import AddEventee from '../events/components/AddEventee';
+import AddEventee from '../events/_components/AddEventee';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Eventee } from '@prisma/client';

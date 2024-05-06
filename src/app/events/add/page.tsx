@@ -1,8 +1,8 @@
 import React from 'react';
-import AddEventForm from './components/AddEventForm';
+import AddEventStepForm from './components/AddEventStepForm/AddEventStepForm';
 
 function AddEvent() {
-  return <AddEventForm />;
+  return <AddEventStepForm />;
 }
 
 export default AddEvent;

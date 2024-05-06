@@ -9,42 +9,41 @@ import {
 } from '@/components/ui/select';
 import { Eventee } from '@prisma/client';
 
-import { createClient } from '@utils/supabase/client';
 import { useEffect, useState } from 'react';
 
 async function fetchEventees() {
-  const supabase = createClient();
+  const eventees = await fetch('/api/eventee', {
+    method: 'GET',
+  });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data } = await supabase
-    .from('Eventee')
-    .select('*')
-    .eq('userId', user!.id);
-
-  return data;
+  return await eventees.json();
 }
 
 export default function EventeeSelectBox({
+  value,
   onValueChange,
 }: {
-  onValueChange?: (value: string) => void;
+  value: string;
+  onValueChange: (value: string, eventee: Eventee) => void;
 }) {
   const [eventees, setEventees] = useState<Eventee[]>([]);
 
   useEffect(() => {
     async function getEventees() {
       const data = await fetchEventees();
-      setEventees((data ?? []) as Eventee[]);
+      setEventees(data.eventees ?? []);
     }
 
     getEventees();
   }, []);
 
+  const handleValueChange = (value: string) => {
+    const eventee = eventees.find((eventee) => eventee.id === value);
+    onValueChange(value, eventee!);
+  };
+
   return (
-    <Select onValueChange={onValueChange} name='eventeeId'>
+    <Select value={value} onValueChange={handleValueChange} name='eventeeId'>
       <SelectTrigger id='eventeeId' className='w-full'>
         <SelectValue placeholder='이벤티를 선택하세요.' />
       </SelectTrigger>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 import Header from '../components/ui/header';
+import Providers from '@/components/Providers';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -20,10 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className='sticky top-0 bg-background text-foreground'>
-        <Header />
-        <main className='flex flex-col items-center'>{children}</main>
-      </body>
+      <Providers>
+        <body className='sticky top-0 bg-background text-foreground'>
+          <Header />
+          <main className='flex flex-col items-center'>{children}</main>
+        </body>
+      </Providers>
     </html>
   );
 }

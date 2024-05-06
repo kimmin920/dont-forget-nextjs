@@ -1,4 +1,5 @@
 'use server';
+import { createBirthdayEvent, createGreetingEvent } from '@/api/event';
 import { createEventee } from '@/api/eventee';
 import {
   CalendarType,
@@ -10,59 +11,44 @@ import { createClient } from '@utils/supabase/server';
 import { redirect } from 'next/navigation';
 
 export async function addEvent(formData: FormData) {
-  const prisma = new PrismaClient();
-  const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return;
-  }
+  let eventId = '';
 
   try {
     const eventType = formData.get('type') as EventType;
-    const data = await prisma.event.create({
-      data: {
+
+    if (eventType === 'BIRTHDAY') {
+      const event = await createBirthdayEvent({
         title: formData.get('title') as string,
         startedAt: new Date(),
-        type: eventType,
-        user: {
-          connect: {
-            id: user.id,
-          },
+        type: 'BIRTHDAY',
+        eventeeId: formData.get('eventeeId') as string,
+        birthday: {
+          birthday: new Date(formData.get('birthday') as string),
+          calendarType: formData.get('calendarType') as CalendarType,
         },
-        eventee: {
-          connect: {
-            id: formData.get('eventeeId') as string,
-          },
+      });
+
+      eventId = event.id;
+    }
+
+    if (eventType === 'GREETING') {
+      const event = await createGreetingEvent({
+        title: formData.get('title') as string,
+        startedAt: new Date(),
+        type: 'GREETING',
+        eventeeId: formData.get('eventeeId') as string,
+        greeting: {
+          repetition: formData.get('repetition') as Repetition,
         },
-        birthday:
-          eventType === 'BIRTHDAY'
-            ? {
-                create: {
-                  birthday: new Date(formData.get('birthday') as string),
-                  calendarType: formData.get('calendarType') as CalendarType,
-                },
-              }
-            : undefined,
-        greeting:
-          eventType === 'GREETING'
-            ? {
-                create: {
-                  repetition: formData.get('repetition') as Repetition,
-                },
-              }
-            : undefined,
-      },
-    });
-    return data;
+      });
+
+      eventId = event.id;
+    }
   } catch (error) {
     console.error('Failed to add events:', error);
     return [];
   } finally {
-    prisma.$disconnect();
+    eventId && redirect(`/events/${eventId}`);
   }
 }
 

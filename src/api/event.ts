@@ -1,4 +1,10 @@
-import { Birthday, Eventee, Greeting, PrismaClient } from '@prisma/client';
+import {
+  Birthday,
+  EventType,
+  Eventee,
+  Greeting,
+  PrismaClient,
+} from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from './user';
@@ -40,20 +46,59 @@ export async function findOneEvent(id: string) {
   return event;
 }
 
-export async function createEvent({
+export async function createBirthdayEvent({
   title,
   startedAt,
   type,
-  eventee,
+  eventeeId,
   birthday,
+}: {
+  title: string;
+  startedAt: Date;
+  type: 'BIRTHDAY';
+  eventeeId: Eventee['id'];
+  birthday: Omit<Birthday, 'eventId'>;
+}) {
+  const user = await getCurrentUser();
+  const event = await prisma.event.create({
+    data: {
+      title,
+      startedAt,
+      type,
+      eventee: {
+        connect: {
+          id: eventeeId,
+        },
+      },
+      user: {
+        connect: {
+          id: user.id,
+        },
+      },
+      birthday: {
+        create: {
+          birthday: birthday.birthday,
+          calendarType: birthday.calendarType,
+        },
+      },
+    },
+  });
+
+  return event;
+}
+
+export async function createGreetingEvent({
+  title,
+  startedAt,
+  type,
+  eventeeId,
   greeting,
 }: {
   title: string;
   startedAt: Date;
-  type: 'BIRTHDAY' | 'GREETING';
-  eventee: Eventee;
-  birthday?: Birthday;
-  greeting?: Greeting;
+  type: 'GREETING';
+  eventeeId: Eventee['id'];
+  greeting: Omit<Greeting, 'eventId'>;
 }) {
   const user = await getCurrentUser();
 
@@ -64,12 +109,17 @@ export async function createEvent({
       type,
       eventee: {
         connect: {
-          id: eventee.id,
+          id: eventeeId,
         },
       },
       user: {
         connect: {
           id: user.id,
+        },
+      },
+      greeting: {
+        create: {
+          repetition: greeting.repetition,
         },
       },
     },
