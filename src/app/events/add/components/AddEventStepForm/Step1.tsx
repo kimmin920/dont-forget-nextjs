@@ -31,7 +31,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { parseDateToInputValue } from '@/lib/date-utils';
+import { isValidDate, parseDateToInputValue } from '@/lib/date-utils';
 
 function Step1() {
   const form = useFormContext<AddEventStepFormType>();
@@ -174,7 +174,10 @@ function Step1() {
                   pattern='\d{4}-\d{2}-\d{2}'
                   value={parseDateToInputValue(field.value)}
                   onChange={(e) => {
-                    field.onChange(new Date(e.target.value));
+                    const date = new Date(e.target.value);
+                    if (isValidDate(date)) {
+                      field.onChange(date);
+                    }
                   }}
                 />
               </FormControl>
