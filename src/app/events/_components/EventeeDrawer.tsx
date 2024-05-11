@@ -36,6 +36,7 @@ export function EventeeSelect() {
 
         <EventeeSelectBox
           onValueChange={(value) => setSelectedEventeeId(value)}
+          value={selectedEventeeId ?? ''}
         />
 
         <DrawerFooter>
