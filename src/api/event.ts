@@ -36,6 +36,7 @@ export async function findOneEvent(id: string) {
     },
     include: {
       eventee: true,
+      user: true,
     },
   });
 

@@ -6,3 +6,5 @@ export const MessageSchema = z.object({
   to: z.string(),
   type: z.nativeEnum(EventType),
 });
+
+export type MessageSchemaType = z.infer<typeof MessageSchema>;

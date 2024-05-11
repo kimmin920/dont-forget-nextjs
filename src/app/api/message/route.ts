@@ -1,4 +1,8 @@
 import {
+  chatbotPrompt,
+  generateUserPromt,
+} from '@/app/helpers/constants/chatbot-prompts';
+import {
   ChatGPTMessage,
   OpenAIStreamPayload,
   OpenAiStream,
@@ -9,16 +13,19 @@ export async function POST(req: Request) {
   const data = await req.json();
 
   const parsed = MessageSchema.parse(data);
-  const outboundMessage: ChatGPTMessage = { role: 'user', content: 'content' };
+  const outboundMessage: ChatGPTMessage = {
+    role: 'user',
+    content: chatbotPrompt + generateUserPromt(parsed),
+  };
 
   const payload: OpenAIStreamPayload = {
     model: 'gpt-3.5-turbo',
     messages: [outboundMessage],
-    temperature: 0.4,
+    temperature: 0.5,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
-    max_tokens: 150,
+    max_tokens: 256,
     stream: true,
     n: 1,
   };
