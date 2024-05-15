@@ -6,6 +6,7 @@ import { findOrCreateUser } from '@/api/user';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
+  console.log('auth/callback origin: ', origin);
   const code = searchParams.get('code');
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? '/profile'; //change to main route
