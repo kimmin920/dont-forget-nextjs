@@ -27,6 +27,7 @@ function NotificationPage() {
 
   return (
     <div>
+      {fcmToken}
       {notificationPermissionStatus !== 'granted' && '알림이 꺼져있습니다.'}
       <form action={scheduleNotification} method='POST'>
         <Input type='datetime-local' name='datetime-local' />
@@ -36,7 +37,7 @@ function NotificationPage() {
           type='text'
           name='device-token'
           value={fcmToken}
-          disabled
+          readOnly
         />
         <Button type='submit'>SUBMIT</Button>
       </form>

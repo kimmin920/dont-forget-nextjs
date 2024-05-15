@@ -20,9 +20,6 @@ export const firebaseConfig = {
   messagingSenderId: '1042202960910',
   appId: '1:1042202960910:web:062d053a8f6acddae5485f',
   measurementId: 'G-622G56FMPB',
-  privateKey: 'c18f0882eadcbc0f63fb7c066d5bd9309b8acceb',
-  clientEmail:
-    'firebase-adminsdk-zzm9k@dont-forget-ace34.iam.gserviceaccount.com',
 };
 
 // Initialize Firebase
