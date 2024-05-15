@@ -27,7 +27,7 @@ function NotificationPage() {
 
   return (
     <div>
-      {fcmToken}
+      <div className='max-w-[350px] overflow-scroll'>{fcmToken}</div>
       {notificationPermissionStatus !== 'granted' && '알림이 꺼져있습니다.'}
       <form action={scheduleNotification} method='POST'>
         <Input type='datetime-local' name='datetime-local' />
