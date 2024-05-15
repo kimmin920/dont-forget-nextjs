@@ -22,6 +22,7 @@ async function Header() {
             <span className='font-bold'>my-app</span>
           </a>
           <Link href='/'>main</Link>
+          <Link href='/notification'>notification</Link>
           <Link href='/events'>Events</Link>
           <Link href='/eventees'>Eventees</Link>
         </nav>
