@@ -31,7 +31,13 @@ function NotificationPage() {
       <form action={scheduleNotification} method='POST'>
         <Input type='datetime-local' name='datetime-local' />
         <Input type='text' name='message' />
-        <input name='device-token' value={fcmToken} />
+        <input
+          hidden
+          type='text'
+          name='device-token'
+          value={fcmToken}
+          disabled
+        />
         <Button type='submit'>SUBMIT</Button>
       </form>
       {/* <Button onClick={sendNotification}>Hit the noti</Button> */}
