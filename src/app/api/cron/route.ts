@@ -23,13 +23,19 @@ export async function GET(req: Request, res: Response) {
   // }
 
   try {
-    await admin.messaging().send({
-      token: temp_token,
-      notification: {
-        title: "Don't forget!",
-        body: 'message',
-      },
-    });
+    console.log(admin);
+    const data = await admin
+      .messaging()
+      .send({
+        token: temp_token,
+        notification: {
+          title: "Don't forget!",
+          body: 'message',
+        },
+      })
+      .catch((error) => console.log(error));
+
+    console.log(data);
 
     return NextResponse.json({ ok: true, data: 'success!!!' });
   } catch (error) {
