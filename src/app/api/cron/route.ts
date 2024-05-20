@@ -11,44 +11,32 @@ export async function GET(req: Request, res: Response) {
   //   return NextResponse.json({ status: 401, message: 'Unauthorized' });
   // }
 
-  try {
-    const accessToken = await getAccessToken();
-    const url = `https://fcm.googleapis.com/v1/projects/${process.env.FCM_PROJECT_ID}/messages:send`;
+  const accessToken = await getAccessToken();
+  const url = `https://fcm.googleapis.com/v1/projects/${process.env.FCM_PROJECT_ID}/messages:send`;
 
-    const payload = {
-      message: {
-        token: temp_token,
-        notification: {
-          title: 'Hello',
-          body: 'message hell0!',
-        },
+  const payload = {
+    message: {
+      token: temp_token,
+      notification: {
+        title: 'Hello',
+        body: 'message hell0!',
       },
-    };
+    },
+  };
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 
-    const data = await response.json();
-
-    return NextResponse.json({ ok: true, data });
-  } catch (error) {
-    const result = await fetch(
-      'http://worldtimeapi.org/api/timezone/America/Chicago',
-      {
-        cache: 'no-store',
-      }
-    );
-    const data = await result.json();
-    return NextResponse.json({
-      status: 400,
-      error,
-      data: data,
-    });
-  }
+  return NextResponse.json({
+    status: response.status,
+    ok: response.ok,
+    headers: response.headers,
+    url: response.url,
+  });
 }
