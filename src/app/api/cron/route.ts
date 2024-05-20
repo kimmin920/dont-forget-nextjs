@@ -40,6 +40,11 @@ export async function GET(req: Request, res: Response) {
       }
     );
     const data = await result.json();
-    return JSON.stringify({ status: 400, error, data: data, message: admin });
+    return NextResponse.json({
+      status: 400,
+      error,
+      data: data,
+      message: admin,
+    });
   }
 }
