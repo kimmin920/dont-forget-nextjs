@@ -1,5 +1,17 @@
 import { sendPushNotification } from '@/app/notification/actions';
 import { NextResponse } from 'next/server';
+import admin from 'firebase-admin';
+import { firebaseConfig } from '@/lib/firebase';
+
+if (admin.apps.length === 0) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      ...firebaseConfig,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    }),
+  });
+}
 
 const temp_token =
   'e5gEGjlYmoJcGLX8_E_lnh:APA91bFLxNCxn8lpYXQzBUsItrlhyuf_vQBGOayS2PUmES5mgSATsdKJmu5Ewc6UneCzMCJNRF8FciYIOw-a124zZfppKLBK8v6YlsjmQjpEigCkBDEb7HgvXpvLjQq0rPMm6HXBstIO';
@@ -11,9 +23,15 @@ export async function GET(req: Request, res: Response) {
   // }
 
   try {
-    const data = await sendPushNotification(temp_token, 'message from functin');
+    await admin.messaging().send({
+      token: temp_token,
+      notification: {
+        title: "Don't forget!",
+        body: 'message',
+      },
+    });
 
-    return NextResponse.json({ ok: true, data });
+    return NextResponse.json({ ok: true, data: 'success!!!' });
   } catch (error) {
     const result = await fetch(
       'http://worldtimeapi.org/api/timezone/America/Chicago',
@@ -22,6 +40,6 @@ export async function GET(req: Request, res: Response) {
       }
     );
     const data = await result.json();
-    return NextResponse.json({ status: 400, error, data: data });
+    return JSON.stringify({ status: 400, error, data: data, message: admin });
   }
 }
