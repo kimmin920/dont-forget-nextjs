@@ -13,7 +13,7 @@ if (admin.apps.length === 0) {
   });
 }
 
-export function sendPushNotification(token: string, message: string) {
+export async function sendPushNotification(token: string, message: string) {
   return admin
     .messaging()
     .send({
