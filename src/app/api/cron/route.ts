@@ -38,5 +38,6 @@ export async function GET(req: Request, res: Response) {
     ok: response.ok,
     headers: response.headers,
     url: response.url,
+    accessToken: accessToken,
   });
 }
