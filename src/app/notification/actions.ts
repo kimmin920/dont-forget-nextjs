@@ -14,21 +14,13 @@ if (admin.apps.length === 0) {
 }
 
 export async function sendPushNotification(token: string, message: string) {
-  return admin
-    .messaging()
-    .send({
-      token,
-      notification: {
-        title: "Don't forget!",
-        body: message,
-      },
-    })
-    .then((response) => {
-      console.log('Successfully sent message:', response);
-    })
-    .catch((error) => {
-      console.log('Error sending message:', error);
-    });
+  return await admin.messaging().send({
+    token,
+    notification: {
+      title: "Don't forget!",
+      body: message,
+    },
+  });
 }
 
 export async function scheduleNotification(formData: FormData) {

@@ -10,6 +10,18 @@ export async function GET(req: Request, res: Response) {
   //   return NextResponse.json({ status: 401, message: 'Unauthorized' });
   // }
 
-  await sendPushNotification(temp_token, 'message from functin');
-  return NextResponse.json({ ok: true });
+  try {
+    const data = await sendPushNotification(temp_token, 'message from functin');
+
+    return NextResponse.json({ ok: true, data });
+  } catch (error) {
+    const result = await fetch(
+      'http://worldtimeapi.org/api/timezone/America/Chicago',
+      {
+        cache: 'no-store',
+      }
+    );
+    const data = await result.json();
+    return NextResponse.json({ status: 400, error, data: data });
+  }
 }
