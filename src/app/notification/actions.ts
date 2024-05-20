@@ -13,8 +13,8 @@ if (admin.apps.length === 0) {
   });
 }
 
-function sendPushNotification(token: string, message: string) {
-  admin
+export function sendPushNotification(token: string, message: string) {
+  return admin
     .messaging()
     .send({
       token,
