@@ -3,16 +3,6 @@ import { NextResponse } from 'next/server';
 import admin from 'firebase-admin';
 import { firebaseConfig } from '@/lib/firebase';
 
-if (admin.apps.length === 0) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      ...firebaseConfig,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    }),
-  });
-}
-
 const temp_token =
   'e5gEGjlYmoJcGLX8_E_lnh:APA91bFLxNCxn8lpYXQzBUsItrlhyuf_vQBGOayS2PUmES5mgSATsdKJmu5Ewc6UneCzMCJNRF8FciYIOw-a124zZfppKLBK8v6YlsjmQjpEigCkBDEb7HgvXpvLjQq0rPMm6HXBstIO';
 export async function GET(req: Request, res: Response) {
@@ -21,6 +11,16 @@ export async function GET(req: Request, res: Response) {
   // ) {
   //   return NextResponse.json({ status: 401, message: 'Unauthorized' });
   // }
+
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        ...firebaseConfig,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      }),
+    });
+  }
 
   try {
     console.log(admin);
@@ -50,7 +50,7 @@ export async function GET(req: Request, res: Response) {
       status: 400,
       error,
       data: data,
-      message: { error, temp_token },
+      message: { error, temp_token, admin: admin.SDK_VERSION },
     });
   }
 }
