@@ -44,7 +44,7 @@ export async function GET(req: Request, res: Response) {
       status: 400,
       error,
       data: data,
-      message: admin,
+      message: { error, temp_token, status: admin.apps },
     });
   }
 }
