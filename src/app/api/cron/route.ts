@@ -1,7 +1,6 @@
 import { sendPushNotification } from '@/app/notification/actions';
 import { NextResponse } from 'next/server';
-import admin from 'firebase-admin';
-import { firebaseConfig } from '@/lib/firebase';
+import { getAccessToken } from './get-access-token';
 
 const temp_token =
   'e5gEGjlYmoJcGLX8_E_lnh:APA91bFLxNCxn8lpYXQzBUsItrlhyuf_vQBGOayS2PUmES5mgSATsdKJmu5Ewc6UneCzMCJNRF8FciYIOw-a124zZfppKLBK8v6YlsjmQjpEigCkBDEb7HgvXpvLjQq0rPMm6HXBstIO';
@@ -12,32 +11,32 @@ export async function GET(req: Request, res: Response) {
   //   return NextResponse.json({ status: 401, message: 'Unauthorized' });
   // }
 
-  if (admin.apps.length === 0) {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        ...firebaseConfig,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      }),
-    });
-  }
-
   try {
-    console.log(admin);
-    const data = await admin
-      .messaging()
-      .send({
+    const accessToken = await getAccessToken();
+    const url = `https://fcm.googleapis.com/v1/projects/${process.env.FCM_PROJECT_ID}/messages:send`;
+
+    const payload = {
+      message: {
         token: temp_token,
         notification: {
-          title: "Don't forget!",
-          body: 'message',
+          title: 'Hello',
+          body: 'message hell0!',
         },
-      })
-      .catch((error) => console.log(error));
+      },
+    };
 
-    console.log(data);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
-    return NextResponse.json({ ok: true, data: 'success!!!' });
+    const data = await response.json();
+
+    return NextResponse.json({ ok: true, data });
   } catch (error) {
     const result = await fetch(
       'http://worldtimeapi.org/api/timezone/America/Chicago',
@@ -50,7 +49,6 @@ export async function GET(req: Request, res: Response) {
       status: 400,
       error,
       data: data,
-      message: { error, temp_token, admin: admin.SDK_VERSION },
     });
   }
 }
