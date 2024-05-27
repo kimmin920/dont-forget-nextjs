@@ -2,11 +2,16 @@ export const dynamic = 'force-dynamic'; // Force dynamic (server) route instead 
 
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
-
-const temp_token =
-  'e5gEGjlYmoJcGLX8_E_lnh:APA91bFLxNCxn8lpYXQzBUsItrlhyuf_vQBGOayS2PUmES5mgSATsdKJmu5Ewc6UneCzMCJNRF8FciYIOw-a124zZfppKLBK8v6YlsjmQjpEigCkBDEb7HgvXpvLjQq0rPMm6HXBstIO';
+import { getMessaging, getToken } from 'firebase/messaging';
+import firebaseApp from '@/lib/firebase';
 
 export async function GET(req: Request, res: Response) {
+  const currentToken = await getUserDeviceToken();
+
+  if (!currentToken) {
+    return;
+  }
+
   const credentials = {
     type: process.env.FCM_TYPE,
     project_id: process.env.FCM_PROJECT_ID,
@@ -27,20 +32,16 @@ export async function GET(req: Request, res: Response) {
   });
 
   const accessToken = await auth.getAccessToken();
-  // if (
-  //   req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`
-  // ) {
-  //   return NextResponse.json({ status: 401, message: 'Unauthorized' });
-  // }
 
   const url = `https://fcm.googleapis.com/v1/projects/${process.env.FCM_PROJECT_ID}/messages:send`;
 
   const payload = {
     message: {
-      token: temp_token,
+      token: currentToken,
+
       notification: {
-        title: 'Hello',
-        body: 'message hell0!',
+        title: 'token',
+        body: `${currentToken}`,
       },
     },
   };
@@ -61,4 +62,18 @@ export async function GET(req: Request, res: Response) {
     url: response.url,
     accessToken: accessToken,
   });
+}
+
+export async function getUserDeviceToken() {
+  if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    const messaging = getMessaging(firebaseApp);
+
+    const currentToken = await getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+    });
+
+    return currentToken;
+  }
+
+  return null;
 }
