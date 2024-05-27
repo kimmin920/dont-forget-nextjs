@@ -8,9 +8,11 @@ import { startOfDay, endOfDay } from 'date-fns';
 const prisma = new PrismaClient();
 
 export async function GET(req: Request, res: Response) {
+  const timeZone = 'Asia/Seoul';
   const today = new Date();
-  const start = startOfDay(today);
-  const end = endOfDay(today);
+  const todayInKST = new Date(today.toLocaleString('en-US', { timeZone }));
+  const start = startOfDay(todayInKST);
+  const end = endOfDay(todayInKST);
 
   const events = await prisma.event.findMany({
     where: {
