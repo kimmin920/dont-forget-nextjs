@@ -64,7 +64,7 @@ export async function GET(req: Request, res: Response) {
   });
 }
 
-export async function getUserDeviceToken() {
+async function getUserDeviceToken() {
   if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     const messaging = getMessaging(firebaseApp);
 
