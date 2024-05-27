@@ -9,7 +9,9 @@ export async function GET(req: Request, res: Response) {
   const currentToken = await getUserDeviceToken();
 
   if (!currentToken) {
-    return;
+    return NextResponse.json({
+      message: `${currentToken?.toString()}`,
+    });
   }
 
   const credentials = {
@@ -65,15 +67,15 @@ export async function GET(req: Request, res: Response) {
 }
 
 async function getUserDeviceToken() {
-  if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-    const messaging = getMessaging(firebaseApp);
+  // if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  const messaging = getMessaging(firebaseApp);
 
-    const currentToken = await getToken(messaging, {
-      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-    });
+  const currentToken = await getToken(messaging, {
+    vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+  });
 
-    return currentToken;
-  }
+  return currentToken;
+  // }
 
-  return null;
+  // return null;
 }
