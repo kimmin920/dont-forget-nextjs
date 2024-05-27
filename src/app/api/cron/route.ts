@@ -3,16 +3,28 @@ export const dynamic = 'force-dynamic'; // Force dynamic (server) route instead 
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { PrismaClient } from '@prisma/client';
+import { startOfDay, endOfDay } from 'date-fns';
 
 const prisma = new PrismaClient();
 
 export async function GET(req: Request, res: Response) {
   const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10); // 'YYYY-MM-DD' 형식으로 날짜를 얻음
+  const start = startOfDay(today);
+  const end = endOfDay(today);
 
   const events = await prisma.event.findMany({
     where: {
-      AND: [{ type: 'BIRTHDAY' }, { birthday: { birthday: todayStr } }],
+      AND: [
+        { type: 'BIRTHDAY' },
+        {
+          birthday: {
+            birthday: {
+              gte: start,
+              lte: end,
+            },
+          },
+        },
+      ],
     },
     include: {
       user: true,
