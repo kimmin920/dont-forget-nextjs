@@ -2,15 +2,29 @@ export const dynamic = 'force-dynamic'; // Force dynamic (server) route instead 
 
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { getMessaging, getToken } from 'firebase/messaging';
-import firebaseApp from '@/lib/firebase';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function GET(req: Request, res: Response) {
-  const currentToken = await getUserDeviceToken();
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10); // 'YYYY-MM-DD' 형식으로 날짜를 얻음
 
-  if (!currentToken) {
+  const events = await prisma.event.findMany({
+    where: {
+      AND: [{ type: 'BIRTHDAY' }, { birthday: { birthday: todayStr } }],
+    },
+    include: {
+      user: true,
+      eventee: true,
+    },
+  });
+
+  if (events.length === 0) {
     return NextResponse.json({
-      message: `${currentToken?.toString()}`,
+      status: 200,
+      ok: true,
+      message: 'no-events for today',
     });
   }
 
@@ -37,45 +51,37 @@ export async function GET(req: Request, res: Response) {
 
   const url = `https://fcm.googleapis.com/v1/projects/${process.env.FCM_PROJECT_ID}/messages:send`;
 
-  const payload = {
-    message: {
-      token: currentToken,
-
-      notification: {
-        title: 'token',
-        body: `${currentToken}`,
+  const messages = events.map((event) => {
+    const payload = {
+      message: {
+        token: event.user.deviceToken,
+        notification: {
+          title: 'Happy Birthday!',
+          body: `Dear ${event.eventee.name}, happy birthday from ${event.user.name}!`,
+        },
       },
-    },
-  };
+    };
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
   });
 
-  return NextResponse.json({
-    status: response.status,
-    ok: response.ok,
-    headers: response.headers,
-    url: response.url,
-    accessToken: accessToken,
-  });
-}
+  const responses = await Promise.all(messages);
+  const results = await Promise.all(responses.map((res) => res.json()));
 
-async function getUserDeviceToken() {
-  // if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  const messaging = getMessaging(firebaseApp);
+  return NextResponse.json({ results }, { status: 200 });
 
-  const currentToken = await getToken(messaging, {
-    vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-  });
-
-  return currentToken;
-  // }
-
-  // return null;
+  // return NextResponse.json({
+  //   status: response.status,
+  //   ok: response.ok,
+  //   headers: response.headers,
+  //   url: response.url,
+  //   accessToken: accessToken,
+  // });
 }

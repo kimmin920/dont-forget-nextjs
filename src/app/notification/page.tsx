@@ -1,14 +1,50 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage, getToken } from 'firebase/messaging';
 import { Input } from '@/components/ui/input';
 import { scheduleNotification } from './actions';
 import useFcmToken from '@/utils/hooks/useFCMToken';
+import { createClient } from '@utils/supabase/client';
+import { User } from '@supabase/supabase-js';
+
+async function fetchCurrentUserData(): Promise<User> {
+  const response = await fetch('/api/user');
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch user data');
+  }
+
+  return response.json();
+}
 
 function NotificationPage() {
   const { fcmToken, notificationPermissionStatus } = useFcmToken();
+
+  useEffect(() => {
+    async function call() {
+      const user = await fetchCurrentUserData();
+      const userId = user.id;
+
+      if (fcmToken && userId) {
+        fetch('/api/user/updateDeviceToken', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId, deviceToken: fcmToken }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Device token updated successfully:', data);
+          })
+          .catch((error) => {
+            console.error('Error updating device token:', error);
+          });
+      }
+    }
+
+    call();
+  }, [fcmToken]);
 
   return (
     <div>
