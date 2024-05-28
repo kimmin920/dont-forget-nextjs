@@ -40,7 +40,7 @@ self.addEventListener('push', function (e) {
 self.addEventListener('notificationclick', function (event) {
   const eventId = event.notification.data.eventId;
   
-  const url = `https://dont-forget-nextjs.vercel.app/events/${eventId}`;
+  const url = `https://dont-forget-nextjs.vercel.app/events/${eventId}/preference`;
   event.notification.close();
 
   event.waitUntil(clients.openWindow(url))
