@@ -22,17 +22,14 @@ const messaging = firebase.messaging();
 self.addEventListener('push', function (e) {
   if (!e.data.json()) return;
 
-  const resultData = e.data.json().notification;
-  const notificationTitle = resultData.title;
+  const jsonData = e.data.json();
+  const notification = jsonData.notification;
+  const notificationTitle = notification.title;
 
   const notificationOptions = {
-    body: resultData.body,
-    data: e.data.json().data
+    body: notification.body,
+    data: jsonData.data
   };
-
-  console.log(resultData.title, {
-    body: resultData.body,
-  });
 
   e.waitUntil(
     self.registration.showNotification(notificationTitle, notificationOptions)
@@ -42,7 +39,7 @@ self.addEventListener('push', function (e) {
 self.addEventListener('notificationclick', function (event) {
   const eventId = event.notification.data.eventId;
   
-  const url = `events/${eventId}`;
+  const url = `/events/${eventId}`;
   event.notification.close();
   event.waitUntil(clients.openWindow(url));
 });
