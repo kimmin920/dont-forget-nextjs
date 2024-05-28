@@ -4,10 +4,10 @@ import { redirect } from 'next/navigation';
 import React from 'react'
 import { PrismaClient } from '@prisma/client';
 
-const supabase = createClient();
-const prisma = new PrismaClient();
 
 async function getCurrentUser(): Promise<User | null> {
+    const supabase = createClient();
+    const prisma = new PrismaClient();
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
