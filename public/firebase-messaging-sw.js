@@ -27,6 +27,7 @@ self.addEventListener('push', function (e) {
 
   const notificationOptions = {
     body: resultData.body,
+    data: e.data.json().data
   };
 
   console.log(resultData.title, {
@@ -39,7 +40,9 @@ self.addEventListener('push', function (e) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-  const url = '/';
+  const eventId = event.notification.data.eventId;
+  
+  const url = `events/${eventId}`;
   event.notification.close();
   event.waitUntil(clients.openWindow(url));
 });

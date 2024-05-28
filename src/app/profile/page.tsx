@@ -19,7 +19,6 @@ const prisma = new PrismaClient();
 
 async function ProfilePage() {
   const supabase = createClient();
-  const users = await prisma.user.findMany();
 
   const {
     data: { user },

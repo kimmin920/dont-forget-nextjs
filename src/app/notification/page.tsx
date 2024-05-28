@@ -6,15 +6,19 @@ import { scheduleNotification } from './actions';
 import useFcmToken from '@/utils/hooks/useFCMToken';
 import { createClient } from '@utils/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { redirect } from 'next/navigation';
+import { getCurrentUser } from '@/api/user';
+
 
 async function fetchCurrentUserData(): Promise<User> {
-  const response = await fetch('/api/user');
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!response.ok) {
+  if (!user) {
     throw new Error('Failed to fetch user data');
   }
 
-  return response.json();
+  return user;
 }
 
 function NotificationPage() {
@@ -22,25 +26,30 @@ function NotificationPage() {
 
   useEffect(() => {
     async function call() {
-      const user = await fetchCurrentUserData();
-      const userId = user.id;
-
-      if (fcmToken && userId) {
-        fetch('/api/user/updateDeviceToken', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId, deviceToken: fcmToken }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('Device token updated successfully:', data);
+      try {
+        const user = await fetchCurrentUserData()
+        const userId = user.id;
+  
+        if (fcmToken && userId) {
+          fetch('/api/user/updateDeviceToken', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId, deviceToken: fcmToken }),
           })
-          .catch((error) => {
-            console.error('Error updating device token:', error);
-          });
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('Device token updated successfully:', data);
+            })
+            .catch((error) => {
+              console.error('Error updating device token:', error);
+            });
+        }
+      } catch(error) {
+        console.error(error)
       }
+
     }
 
     call();

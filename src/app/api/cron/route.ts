@@ -70,8 +70,11 @@ export async function GET(req: Request, res: Response) {
       message: {
         token: event.user.deviceToken,
         notification: {
-          title: 'Happy Birthday!',
-          body: `Dear ${event.eventee.name}, happy birthday from ${event.user.name}!`,
+          title: `It's ${event.eventee.name}'s Birthday!`,
+          body: `Dear , happy birthday from ${event.user.name}!`,
+        },
+        data: {
+          eventId: event.id
         },
       },
     };
@@ -90,12 +93,4 @@ export async function GET(req: Request, res: Response) {
   const results = await Promise.all(responses.map((res) => res.json()));
 
   return NextResponse.json({ results }, { status: 200 });
-
-  // return NextResponse.json({
-  //   status: response.status,
-  //   ok: response.ok,
-  //   headers: response.headers,
-  //   url: response.url,
-  //   accessToken: accessToken,
-  // });
 }

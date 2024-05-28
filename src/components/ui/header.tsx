@@ -25,6 +25,7 @@ async function Header() {
           <Link href='/notification'>notification</Link>
           <Link href='/events'>Events</Link>
           <Link href='/eventees'>Eventees</Link>
+          <Link href='/devices'>Devices</Link>
         </nav>
         <div className='flex flex-1 items-center justify-end space-x-2'>
           {user !== null ? (
