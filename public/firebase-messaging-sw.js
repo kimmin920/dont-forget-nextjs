@@ -41,5 +41,5 @@ self.addEventListener('notificationclick', function (event) {
   
   const url = `/events/${eventId}`;
   event.notification.close();
-  event.waitUntil(clients.openWindow(url));
+  event.waitUntil(clients.openWindow('/events'));
 });
