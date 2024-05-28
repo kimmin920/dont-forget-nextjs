@@ -27,6 +27,7 @@ self.addEventListener('push', function (e) {
   const notificationTitle = notification.title;
 
   const notificationOptions = {
+    tag: jsonData.data.eventId,
     body: notification.body,
     data: jsonData.data
   };
@@ -39,19 +40,8 @@ self.addEventListener('push', function (e) {
 self.addEventListener('notificationclick', function (event) {
   const eventId = event.notification.data.eventId;
   
-  const url = `/events/${eventId}`;
+  const url = `https://dont-forget-nextjs.vercel.app/events/${eventId}`;
   event.notification.close();
-  
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
-      for (const client of windowClients) {
-        if (client.url === url && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(url);
-      }
-    })
-  );
+
+  event.waitUntil(clients.openWindow(url))
 });

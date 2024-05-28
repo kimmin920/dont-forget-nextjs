@@ -4,21 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { scheduleNotification } from './actions';
 import useFcmToken from '@/utils/hooks/useFCMToken';
-import { createClient } from '@utils/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/api/user';
-
 
 async function fetchCurrentUserData(): Promise<User> {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser()
+  const response = await fetch('/api/user');
 
-  if (!user) {
+  if (!response.ok) {
     throw new Error('Failed to fetch user data');
   }
 
-  return user;
+  return response.json();
 }
 
 function NotificationPage() {
