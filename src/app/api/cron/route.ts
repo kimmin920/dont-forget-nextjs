@@ -1,5 +1,4 @@
-export const dynamic = 'force-dynamic'; // Force dynamic (server) route instead of static page
-
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { PrismaClient } from '@prisma/client';

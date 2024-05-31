@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang='en' className={fontSans.className}>
       <Providers>
         <body className='sticky top-0 bg-background text-foreground'>
           <Header />
