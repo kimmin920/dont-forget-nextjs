@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '../components/ui/header';
 import Providers from '@/components/Providers';
 import Head from 'next/head';
+import { MainLayout } from '@/layout/main-layout';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -24,9 +25,14 @@ export default function RootLayout({
   return (
     <html lang='en' className={fontSans.className}>
       <Providers>
-        <body className='sticky top-0 bg-background text-foreground'>
-          <Header />
-          <main className='flex flex-col items-center'>{children}</main>
+        {/* <body className='sticky top-0 bg-background text-foreground'> */}
+        <body>
+          <div className='flex min-h-screen w-full flex-col'>
+            <Header />
+            <MainLayout>{children}</MainLayout>
+          </div>
+          {/* <Header />
+          <main className='flex flex-col items-center'>{children}</main> */}
         </body>
       </Providers>
     </html>
